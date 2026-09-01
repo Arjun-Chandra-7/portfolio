@@ -1,74 +1,37 @@
-import rawData from '@/data/rawNesh.json';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { ArrowUpRight, Check, Copy, Menu, X } from 'lucide-react';
+
+const projects = [
+  { number: '01', name: 'BYTE LABS', kicker: 'WEB DEVELOPMENT · SOFTWARE · PRODUCT BUILDING', title: 'Building software, one experiment at a time.', description: 'A collection of practical applications and experiments exploring modern web development, AI, and product ideas. Byte Eats is one of the full-stack food applications inside the lab.', action: 'VISIT BYTE LABS', href: 'https://github.com/Arjun-Chandra-7', tone: 'lime' },
+  { number: '02', name: 'CRICKLYTICS', kicker: 'COMPUTER VISION · AI · SPORTS TECHNOLOGY · BIOMECHANICS', title: 'Your game, decoded.', description: 'An AI-powered cricket biomechanics and coaching platform. Give it a smartphone video and it analyzes batting technique joint-by-joint, covering backlift, footwork, head position, elbow movement, balance, weight transfer, and mechanics.', action: 'TRY CRICKLYTICS', href: '#contact', tone: 'orange' },
+  { number: '03', name: 'VIRALYST', kicker: 'AI · CONTENT INTELLIGENCE · DATA · AUTOMATION', title: 'Understanding why content goes viral.', description: 'An AI-powered content intelligence project in development, designed to analyze hooks, structure, audience psychology, pacing, and engagement signals so creators can understand what works and why.', action: 'CURRENTLY IN DEVELOPMENT', href: '#contact', tone: 'blue' },
+  { number: '04', name: 'PEN FIGHT', kicker: 'GAME DEVELOPMENT · WEB · INTERACTION', title: 'The unofficial sport of the last bench.', description: 'A browser-based multiplayer-style game built around the absurdly competitive school pastime of fighting with pens. Sometimes the most serious game development problem is stationery.', action: 'PLAY PEN FIGHT', href: 'https://github.com/Arjun-Chandra-7', tone: 'pink' },
+  { number: '05', name: 'REPRODUCING GPT-2', kicker: 'DEEP LEARNING · TRANSFORMERS · PYTORCH · NLP', title: 'Understanding AI from the inside.', description: 'A from-scratch reproduction of GPT-2 covering tokenization, embeddings, attention, transformer blocks, training, and inference. The goal is to understand what happens underneath the abstraction.', action: 'IN PROGRESS', href: '#contact', tone: 'violet' },
+];
+const capabilities = [
+  ['ARTIFICIAL INTELLIGENCE', 'Machine learning, generative AI, transformer architectures, AI applications, experimentation, and intelligent automation.'], ['COMPUTER VISION', 'Video analysis, pose estimation, human detection, biomechanics, gesture recognition, and real-world vision systems.'], ['SOFTWARE DEVELOPMENT', 'Python, C++, web development, APIs, application architecture, automation, and experimental software.'], ['MACHINE LEARNING', 'Model development, training pipelines, data processing, experimentation, and understanding neural-network architectures.'], ['INTERACTIVE WEB', 'Interactive websites, games, animations, modern interfaces, and experimental digital experiences.'], ['PRODUCT BUILDING', 'Taking an idea from concept to prototype, then iterating until it becomes something people can actually use.'],
+];
+const milestones = [
+  ['2023', 'Getting into technology', 'Started experimenting with programming, Arduino, electronics, sensors, and small software projects.'], ['2024', 'AI, robotics & competitions', 'Expanded into Python, computer vision, automation, robotics, and software while participating in technology competitions and innovation programs.'], ['2025', 'Building bigger', 'Started developing ambitious projects that combined AI, hardware, computer vision, and automation.'], ['2026', 'Software & AI', 'Moved deeper into software engineering and AI, building Cricklytics, Byte Labs, Viralyst, and Pen Fight while exploring machine learning from the fundamentals.'], ['NOW', "Understanding what's underneath", 'Currently reproducing GPT-2 from scratch to understand the architecture and training process rather than simply using an existing model.'],
+];
+function SectionLabel({ children }: { children: React.ReactNode }) { return <p className="section-label"><span />{children}</p>; }
 
 export default function Home() {
-  return (
-    <>
-      <div dangerouslySetInnerHTML={{ __html: rawData.html }} />
-      {/* Exact script bundle in synchronous execution order */}
-      <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=691d7c9f14d0280ebe2d4108" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/691d7c9f14d0280ebe2d4108/js/webflow.schunk.f383f5e6d5965c7d.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/691d7c9f14d0280ebe2d4108/js/webflow.a9cc831c.9e692597beb1f023.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/gsap.min.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/ScrollTrigger.min.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/Flip.min.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/SplitText.min.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/ScrollToPlugin.min.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/ScrollSmoother.min.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/MotionPathPlugin.min.js" type="text/javascript" />
-      <script src="https://cdn.prod.website-files.com/gsap/3.15.0/DrawSVGPlugin.min.js" type="text/javascript" />
-      <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" />
-      <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" />
-      <script src="/script.js" />
-      <script dangerouslySetInnerHTML={{ __html: `
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const target = document.querySelector(link.getAttribute('href'));
-            if (target) {
-              target.scrollIntoView({ behavior: 'smooth' });
-            }
-          });
-        });
-      `}} />
-      <script dangerouslySetInnerHTML={{ __html: `
-        (function () {
-          var FG_BASE = 'https://f1-assets.b-cdn.net/nesh-work/Portfolio%20Work/';
-          var ua = navigator.userAgent;
-          var isSafari = /^((?!chrome|chromium|crios|fxios|edg|opr|android).)*safari/i.test(ua)
-                         || /iP(ad|hone|od)/.test(ua)
-                         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-          document.querySelectorAll('.work-image-item').forEach(function (container) {
-            var slug = container.getAttribute('data-fg-video');
-            if (!slug) return;
-
-            var bgImg = container.querySelector('.work-image');
-            var posterUrl = bgImg ? (bgImg.getAttribute('src') || '') : '';
-
-            var video = document.createElement('video');
-            video.className = 'work-fg-video';
-            video.autoplay = true;
-            video.loop = true;
-            video.muted = true;
-            video.playsInline = true;
-            video.setAttribute('playsinline', '');
-            video.setAttribute('webkit-playsinline', '');
-            if (posterUrl) video.poster = posterUrl;
-
-            var ext = isSafari ? '.mov' : '.webm';
-            var type = isSafari ? 'video/quicktime' : 'video/webm';
-            var src = FG_BASE + encodeURIComponent(slug) + ext;
-
-            var source = document.createElement('source');
-            source.src = src;
-            source.type = type;
-            video.appendChild(source);
-
-            container.appendChild(video);
-          });
-        })();
-      `}} />
-    </>
-  );
+  const [menuOpen, setMenuOpen] = useState(false); const [copied, setCopied] = useState(false); const email = 'arjun.chandra.engineer@gmail.com';
+  useEffect(() => { document.body.classList.add('portfolio-ready'); return () => document.body.classList.remove('portfolio-ready'); }, []);
+  const copyEmail = async () => { try { await navigator.clipboard.writeText(email); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch { window.location.href = `mailto:${email}`; } };
+  return <main>
+    <header className="site-header"><a className="brand" href="#top"><span className="brand-mark" />ARJUN CHANDRA</a><nav className={menuOpen ? 'nav-links is-open' : 'nav-links'}>{['ABOUT', 'WORK', 'CAPABILITIES', 'CONTACT'].map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{item}</a>)}</nav><button className="menu-button" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={21} /> : <Menu size={21} />}</button></header>
+    <section className="hero section-shell" id="top"><div className="hero-grid" aria-hidden="true"><i /><i /><i /><i /><i /></div><div className="hero-copy"><SectionLabel>AI · SOFTWARE · COMPUTER VISION · EXPERIMENTS</SectionLabel><h1>I build things<br />that <em>shouldn&apos;t</em><br />exist yet<span className="accent">.</span></h1><p className="hero-intro">I&apos;m Arjun, a student builder turning ambitious ideas into working systems across AI, software, computer vision, automation, and experimental products.</p><div className="hero-actions"><a className="button button-dark" href="#work">VIEW MY WORK <ArrowUpRight size={16} /></a><a className="button button-light" href="#about">ABOUT ME <ArrowUpRight size={16} /></a></div></div><div className="hero-note">01 / BUILDING IN PUBLIC<br /><span>LEARN · BUILD · BREAK · REBUILD</span></div></section>
+    <section className="about section-shell" id="about"><div className="section-aside"><SectionLabel>02 / ABOUT ME</SectionLabel><span className="aside-number">01</span></div><div className="about-content"><h2>Building,<br /><em>not just learning.</em></h2><p>I&apos;m a student developer and AI enthusiast interested in building real products rather than only experimenting with tutorials.</p><p>My projects range from AI-powered cricket analysis and social-media intelligence to browser games, web applications, and reproducing foundational AI systems from scratch.</p><p>I enjoy working at the intersection of software and intelligence: taking a problem, figuring out what technology can actually solve it, and then building the system myself.</p></div></section>
+    <section className="journey section-shell"><div className="section-heading"><SectionLabel>03 / THE JOURNEY</SectionLabel><h2>From experiments<br /><em>to real systems.</em></h2></div><div className="timeline">{milestones.map(([year, title, text]) => <article key={year}><span className="timeline-year">{year}</span><div><h3>{title}</h3><p>{text}</p></div></article>)}</div></section>
+    <section className="work section-shell" id="work"><div className="section-heading work-heading"><div><SectionLabel>04 / SELECTED WORK</SectionLabel><h2>Projects I&apos;ve<br /><em>built.</em></h2></div><p>A collection of software, AI, data, and experimental projects.</p></div><div className="project-list">{projects.map((project) => <article className={`project-card ${project.tone}`} key={project.number}><div className="project-top"><span>{project.number}</span><span>{project.kicker}</span></div><div className="project-body"><div><h3>{project.name}</h3><h4>{project.title}</h4></div><p>{project.description}</p></div><a className="project-link" href={project.href} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}>{project.action} {project.href.startsWith('http') && <ArrowUpRight size={15} />}</a></article>)}</div></section>
+    <section className="capabilities section-shell" id="capabilities"><div className="section-heading"><SectionLabel>05 / CAPABILITIES</SectionLabel><h2>What I<br /><em>work with.</em></h2></div><div className="capability-grid">{capabilities.map(([title, text], index) => <article key={title}><span className="capability-index">0{index + 1}</span><h3>{title}</h3><p>{text}</p></article>)}</div><div className="stack-row"><span>TECH STACK</span><p>Python · C++ · HTML · CSS · JavaScript · PyTorch · Computer Vision · MediaPipe · Transformers · Generative AI · APIs · Git · GitHub · Linux</p></div></section>
+    <section className="achievements section-shell"><div className="section-heading"><SectionLabel>06 / ACHIEVEMENTS</SectionLabel><h2>Building beyond<br /><em>the screen.</em></h2></div><div className="achievement-grid">{[['WINNER', 'Innoskill 2025', 'Won with a technology-focused project.'], ['3RD PLACE', 'Hackathon', 'Developed a working solution under a limited timeframe.'], ['PARTICIPANT', 'U.S. Embassy STEAM Workshop', 'Technology, innovation, and interdisciplinary problem solving.'], ['PARTICIPANT', 'Technoxian 2024', 'Competitive technology and robotics activities.'], ['PARTICIPANT', 'Coolest Projects', 'Presented a project in a student innovation environment.'], ['PARTICIPANT', 'ATL & Amity Robo Competitions', 'Engineering, prototyping, and problem solving.']].map(([badge, title, text]) => <article key={title}><span>{badge}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+    <section className="philosophy section-shell"><SectionLabel>07 / PHILOSOPHY</SectionLabel><h2>I build<br /><em>to understand.</em></h2><p>I don&apos;t want to just know how to use technology. <strong>I want to understand how it works.</strong></p><div className="principles"><span>UNDERSTAND IT.</span><span>BUILD IT.</span><span>BREAK IT.</span><span>IMPROVE IT.</span></div></section>
+    <section className="contact section-shell" id="contact"><SectionLabel>08 / CONTACT</SectionLabel><h2>Have something<br /><em>worth building?</em></h2><p>I&apos;m interested in ambitious technical ideas, AI projects, software experiments, collaborations, and interesting problems that deserve more than a theoretical solution.</p><div className="contact-actions"><a className="button button-dark" href={`mailto:${email}`}>GET IN TOUCH <ArrowUpRight size={16} /></a><button className="button button-light" onClick={copyEmail}>{copied ? <Check size={16} /> : <Copy size={16} />} {copied ? 'COPIED' : 'COPY EMAIL'}</button><a className="button button-light" href="https://github.com/Arjun-Chandra-7" target="_blank" rel="noreferrer">VIEW GITHUB <ArrowUpRight size={16} /></a></div></section>
+    <footer className="site-footer"><div><strong>ARJUN CHANDRA</strong><span>AI · SOFTWARE · COMPUTER VISION · EXPERIMENTS</span></div><p>© 2026 Arjun Chandra.<br />Built to understand how things work.</p></footer>
+  </main>;
 }
