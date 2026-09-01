@@ -45,19 +45,19 @@ const mainProjects = [
   },
   {
     num: '04',
-    title: 'Pen Fight',
-    type: 'Physics Arena',
-    status: 'LIVE GAME',
-    copy: 'The classic Indian school-desk sport reimagined as a competitive, physics-driven multiplayer browser game with custom collision dynamics and kinetic sound FX.',
-    specs: [{ label: 'PHYSICS', val: 'Matter.js Engine' }, { label: 'NETWORK', val: 'WebSockets' }, { label: 'AUDIO', val: 'Web Audio API' }],
-    metrics: [{ label: 'MULTIPLAYER', val: '60 FPS' }, { label: 'SERVER TICK', val: '30ms' }],
-    href: 'https://pen-fight-lemon.vercel.app/',
-    ctaText: 'ENTER THE PEN FIGHT ARENA ↗'
+    title: 'Byte Labs',
+    type: 'Experimental Lab',
+    status: 'LIVE LAB',
+    copy: 'An interactive digital playground and creative engineering laboratory for useful, strange, and practical creative technology experiments.',
+    specs: [{ label: 'STACK', val: 'TypeScript • WebGL' }, { label: 'EXPERIMENTS', val: 'Multi-Modal Sandbox' }, { label: 'DEPLOY', val: 'Edge Network' }],
+    metrics: [{ label: 'EXPERIMENTS', val: 'Live Sandbox' }, { label: 'LATENCY', val: 'Instant' }],
+    href: 'https://byte-eats-delta.vercel.app/',
+    ctaText: 'LAUNCH BYTE LABS SANDBOX ↗'
   }
 ];
 
 const sideProjects = [
-  { num: 'A', title: 'Byte Labs', type: 'Experimental Lab', copy: 'An interactive home for useful, strange, and practical creative technology experiments.', href: 'https://byte-eats-delta.vercel.app/' },
+  { num: 'A', title: 'Pen Fight', type: 'Physics Arena', copy: 'Competitive multiplayer physics browser game reimagining the classic school-desk sport.', href: 'https://pen-fight-lemon.vercel.app/' },
   { num: 'B', title: 'Café Sample', type: 'Sensory Web UI', copy: 'A high-atmosphere café concept with bespoke art direction, sound, and fluid interaction.', href: 'https://cafe-sample-websitte.netlify.app/' },
   { num: 'C', title: 'JARVIS', type: 'Private AI System', copy: 'Personal autonomous agent, computer control, neural voice pipeline, and local tools.', status: 'PRIVATE' },
   { num: 'D', title: 'GPT-2, Rebuilt', type: 'Transformer Research', copy: 'Reproducing GPT-2 from first principles in PyTorch to master modern attention architectures.', status: 'IN RESEARCH' },
@@ -402,16 +402,16 @@ document.querySelector('#app').innerHTML = `
         </div>
 
         <div class="rinnegan-bento-grid scene-item">
-          <!-- Bento A: Byte Labs -->
-          <a class="bento-tile bento-tile--hero" href="https://byte-eats-delta.vercel.app/" target="_blank" rel="noreferrer">
+          <!-- Bento A: Pen Fight -->
+          <a class="bento-tile bento-tile--hero" href="https://pen-fight-lemon.vercel.app/" target="_blank" rel="noreferrer">
             <div class="bento-tile__top">
               <span class="bento-pill">EXP 01</span>
-              <span class="bento-beacon"><i></i>LIVE SANDBOX</span>
+              <span class="bento-beacon"><i></i>LIVE GAME</span>
             </div>
-            <h3>Byte Labs</h3>
-            <p>An interactive home for useful, strange, and practical creative technology experiments.</p>
+            <h3>Pen Fight</h3>
+            <p>Competitive multiplayer physics browser game reimagining the classic school-desk sport.</p>
             <div class="bento-tile__foot">
-              <b>LAUNCH LAB</b><i>↗</i>
+              <b>ENTER ARENA</b><i>↗</i>
             </div>
           </a>
 
