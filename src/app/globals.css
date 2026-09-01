@@ -80,19 +80,20 @@ body {
 }
 
 .portrait-stat { display: flex; align-items: center; justify-content: center; gap: 0.9rem; text-align: center; }
-.portrait-stat strong { color: #ffff18; font-size: 3.25rem; line-height: 1; }
-.portrait-stat span { font-size: 1rem; font-weight: 700; line-height: 1.05; }
-.portrait-stat-projects { top: 55.2%; left: 17.9%; width: 14.9%; height: 10.8%; }
-.portrait-stat-years { top: 68%; left: 21%; width: 9.7%; height: 15%; flex-direction: column; gap: 0.2rem; }
-.portrait-traits { top: 66.4%; right: 22.3%; display: grid; min-width: 10.5rem; gap: 0.78rem; padding: 1.25rem 1.45rem; font-size: 1rem; }
+.portrait-stat-icon { width: 3.5vw; height: auto; flex-shrink: 0; }
+.portrait-stat strong { color: #ffff18; font-size: 3.25rem; line-height: 1; display: block; }
+.portrait-stat span { font-size: 1rem; font-weight: 700; line-height: 1.05; display: block; }
+.portrait-stat-projects { top: 62.5%; left: 19.5%; width: 14.5%; height: 11.5%; justify-content: space-evenly; }
+.portrait-stat-years { top: 76%; left: 22.5%; width: 9.7%; height: 15%; flex-direction: column; gap: 0.2rem; }
+.portrait-traits { top: 60.5%; right: 19.8%; display: grid; min-width: 11.5rem; gap: 0.78rem; padding: 1.25rem 1.45rem; font-size: 1rem; }
 .portrait-traits span { display: flex; align-items: center; gap: 0.55rem; color: #ffff18; }
 .portrait-traits b { color: #fff; }
 
 .portrait-statement {
   position: absolute;
   z-index: 6;
-  left: 35.5%;
-  top: 64.8%;
+  left: 37.5%;
+  top: 61.5%;
   color: #fff;
   font-size: clamp(3.1rem, 4.55vw, 4.25rem);
   font-weight: 800;
@@ -100,7 +101,7 @@ body {
   letter-spacing: -0.04em;
 }
 
-.portrait-actions { position: absolute; z-index: 7; top: 77%; left: 39.8%; display: flex; gap: 0.9rem; }
+.portrait-actions { position: absolute; z-index: 7; top: 76.5%; left: 40.8%; display: flex; gap: 0.9rem; }
 .portrait-actions a { min-width: 9.5rem; padding: 0.85rem 1.3rem; color: #050505; text-align: center; font-weight: 800; border-radius: 0.55rem; background: #ffff18; transition: transform 0.3s ease-out; }
 .portrait-actions a:hover { transform: translateY(-3px); }
 .portrait-sidecopy { position: absolute; z-index: 6; bottom: 4.1%; margin: 0; font-size: 1rem; line-height: 1.55; }
