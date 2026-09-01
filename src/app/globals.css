@@ -10,3 +10,27 @@ html, body {
 .nesh-logo-preload-wrap {
   pointer-events: none;
 }
+
+/* ARJUN Big Typography */
+.nesh-logo-ghost text,
+.nesh-logo-preload-svg text,
+.nesh-logo-svg text {
+  fill: #111111;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Sidebar navigation links enhancement */
+.hero-navigation-link {
+  font-weight: 700 !important;
+  color: #111111 !important;
+  letter-spacing: -0.01em;
+}
+
+/* Work Cards refinement */
+.work-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
