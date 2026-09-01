@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Creative Webflow Developer — Nenad Popadic | NESH®",
-  description: "Webflow developer with 7 years of experience delivering custom builds, CMS setups, GSAP animations, and technical SEO for biotech, SaaS, and blockchain brands.",
+  title: "Arjun Chandra — AI & Software Builder",
+  description: "I Build Things That Shouldn't Exist Yet. AI, software, computer vision, automation, and experimental products.",
 };
 
 export default function RootLayout({
