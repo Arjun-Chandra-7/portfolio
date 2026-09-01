@@ -32,7 +32,7 @@ export default function SelectedWork() {
         </div>
       </div>
 
-      {/* Flagship Projects List (Nesh editorial rhythm + Mohsin cinematic cards) */}
+      {/* Flagship projects list */}
       <div className="space-y-16">
         {PROJECTS.map((proj, idx) => (
           <div

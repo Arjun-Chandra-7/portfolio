@@ -196,7 +196,7 @@ export default function SystemGraphHero() {
       {/* 3D WebGL Canvas Layer */}
       <div ref={containerRef} className="absolute inset-0 z-0 opacity-85 pointer-events-none" />
 
-      {/* Realtime Telemetry Overlay Box (Nesh/Mohsin System Annotation) */}
+      {/* Realtime telemetry overlay */}
       <div className="absolute bottom-4 right-4 z-10 hidden sm:flex flex-col gap-1.5 p-3 rounded bg-[#0d0d0f]/80 backdrop-blur-md border border-white/10 text-[11px] font-mono text-neutral-400">
         <div className="flex items-center justify-between gap-4">
           <span className="text-neutral-500 uppercase">SYS_GRAPH</span>

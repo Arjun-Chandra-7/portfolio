@@ -23,7 +23,7 @@ export default function TimelineSection() {
         </div>
       </div>
 
-      {/* Editorial Timeline (Nesh-inspired linear technical ledger) */}
+      {/* Editorial timeline */}
       <div className="space-y-8 relative before:absolute before:inset-0 before:left-4 sm:before:left-8 before:w-[1px] before:bg-white/10">
         {TIMELINE.map((item, idx) => (
           <div

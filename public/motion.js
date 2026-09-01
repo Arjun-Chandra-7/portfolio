@@ -291,13 +291,13 @@ const MobileMenu = {
       });
   
       const ghostElements = [
-        '.nav-logo-item .nesh-logo',
-        '.nesh-copyright-icon',
+        '.nav-logo-item .arjun-logo',
+        '.arjun-copyright-icon',
         '.nav-button',
         '.nav-button-secondary',
-        '.nav-webflow-bg',
-        '.nav-webflow-icon',
-        '.nav-webflow-text',
+        '.nav-builder-bg',
+        '.nav-builder-icon',
+        '.nav-builder-text',
         '.nav-experience-bg',
         '.nav-experience-numb',
         '.nav-experience-text'
@@ -346,7 +346,7 @@ const MobileMenu = {
       const measurement = { real, ghost, type, settings, rRect, gRect };
 
       if (type === 'logo') {
-        const parent = real.closest('.nesh-copyright-wrap') || real.closest('.nav-button-wrap') || real.closest('.nav-logo-item') || real.parentElement;
+        const parent = real.closest('.arjun-copyright-wrap') || real.closest('.nav-button-wrap') || real.closest('.nav-logo-item') || real.parentElement;
         measurement.parent = parent;
         measurement.parentRect = parent.getBoundingClientRect();
         measurement.computedStyle = {
@@ -388,7 +388,7 @@ const MobileMenu = {
       if (type === 'logo') {
         const { parent, parentRect, computedStyle, offsetHeight } = m;
 
-        if (!parent.classList.contains('nesh-copyright-wrap') && !parent.classList.contains('nav-button-wrap')) {
+        if (!parent.classList.contains('arjun-copyright-wrap') && !parent.classList.contains('nav-button-wrap')) {
           parent.style.position = 'relative';
           parent.style.minHeight = offsetHeight + 'px';
           parent.style.display = 'block';
@@ -517,7 +517,7 @@ const MobileMenu = {
       // ---- Phase 1: Measure everything on a clean DOM (copyright icon handled separately) ----
       const measurements = [];
 
-      measurements.push(this.measurePair(Utils.$('.nav-logo-item .nesh-logo'), Utils.$('.nesh-logo-ghost'), 'logo'));
+      measurements.push(this.measurePair(Utils.$('.nav-logo-item .arjun-logo'), Utils.$('.arjun-logo-ghost'), 'logo'));
       measurements.push(this.measurePair(Utils.$('.nav-button'), Utils.$('.hero-cta-button'), 'logo'));
       measurements.push(this.measurePair(Utils.$('.nav-button-secondary'), Utils.$('.hero-button'), 'logo'));
 
@@ -526,9 +526,9 @@ const MobileMenu = {
         measurements.push(this.measurePair(link, Utils.$(`.hero-link-ghost[data-link-id="${id}"]`), 'link'));
       });
 
-      measurements.push(this.measurePair(Utils.$('.nav-webflow-bg'), Utils.$('.hero-card-2-bg'), 'background'));
-      measurements.push(this.measurePair(Utils.$('.nav-webflow-icon'), Utils.$('.hero-webflow-icon'), 'icon_center'));
-      measurements.push(this.measurePair(Utils.$('.nav-webflow-text'), Utils.$('.hero-webflow-projects-text'), 'text_font'));
+      measurements.push(this.measurePair(Utils.$('.nav-builder-bg'), Utils.$('.hero-card-2-bg'), 'background'));
+      measurements.push(this.measurePair(Utils.$('.nav-builder-icon'), Utils.$('.hero-builder-icon'), 'icon_center'));
+      measurements.push(this.measurePair(Utils.$('.nav-builder-text'), Utils.$('.hero-builder-projects-text'), 'text_font'));
       measurements.push(this.measurePair(Utils.$('.nav-experience-bg'), Utils.$('.experience-bg'), 'background'));
       measurements.push(this.measurePair(Utils.$('.nav-experience-numb'), Utils.$('.experience-number'), 'icon_center'));
       measurements.push(this.measurePair(Utils.$('.nav-experience-text'), Utils.$('.experience-text'), 'text_font'));
@@ -541,13 +541,13 @@ const MobileMenu = {
 
       // ---- Phase 3: Copyright icon (explicit handler) ----
       // Must happen AFTER Phase 2 because the main logo animation sets
-      // .nav-logo-item to position:relative, which shifts .nesh-copyright-wrap
+      // .nav-logo-item to position:relative, which shifts .arjun-copyright-wrap
       // (position:absolute inside .nav-logo-item). Measuring before that
       // gives wrong rRect. Also uses same scroll range as main logo (end: 50% top).
-      const crReal = Utils.$('.nesh-copyright-icon');
-      const crGhost = Utils.$('.nesh-copyright-icon-ghost');
+      const crReal = Utils.$('.arjun-copyright-icon');
+      const crGhost = Utils.$('.arjun-copyright-icon-ghost');
       if (crReal && crGhost) {
-        const parent = crReal.closest('.nesh-copyright-wrap');
+        const parent = crReal.closest('.arjun-copyright-wrap');
         const gRect = crGhost.getBoundingClientRect();
         const pRect = parent.getBoundingClientRect();
         const computedWidth = window.getComputedStyle(crReal).width;
@@ -982,11 +982,11 @@ const HorizontalScroll = {
         },
         onDark: () => {
           Utils.$('.nav-experience-text')?.classList.add('text-color-white');
-          Utils.$('.nav-webflow-text')?.classList.add('text-color-white');
+          Utils.$('.nav-builder-text')?.classList.add('text-color-white');
         },
         onLight: () => {
           Utils.$('.nav-experience-text')?.classList.remove('text-color-white');
-          Utils.$('.nav-webflow-text')?.classList.remove('text-color-white');
+          Utils.$('.nav-builder-text')?.classList.remove('text-color-white');
         }
       },
       {
@@ -1096,8 +1096,8 @@ const Preloader = {
   timeline: null,
 
   init() {
-    const logo = Utils.$('.nesh-logo-preload-svg');
-    const wrapper = Utils.$('.nesh-logo-preload-wrap') || Utils.$('.nesh-logo-wrap');
+    const logo = Utils.$('.arjun-logo-preload-svg');
+    const wrapper = Utils.$('.arjun-logo-preload-wrap') || Utils.$('.arjun-logo-wrap');
     if (!logo || !wrapper) return;
 
     // Safety fallback: ensure preload logo is always removed after intro completes
@@ -1111,7 +1111,7 @@ const Preloader = {
       return;
     }
 
-    const letters = Utils.$$('.nesh-logo-letter');
+    const letters = Utils.$$('.arjun-logo-letter');
     const navContainer = Utils.$('.nav-container');
     // .profile-img-wrap has an inverse-scale applied by Sidebar.scale(), so we
     // animate the inner .profile-img-item to avoid fighting that transform.
@@ -1125,7 +1125,7 @@ const Preloader = {
     const heroHeading = Utils.$('.hero-heading');
     const navButton = Utils.$('.nav-button');
     const navButtonSecondary = Utils.$('.nav-button-secondary');
-    // Captures .nav-logo-item which contains both the real nav logo (.nesh-logo)
+    // Captures .nav-logo-item which contains both the real nav logo (.arjun-logo)
     // and copyright wrap. Both are FLIP'd by GhostEngine to hero ghost positions,
     // so they'd flash visible if nav-container is shown before preloader logo hides.
     const navLogoItem = Utils.$('.nav-logo-item');
@@ -1204,9 +1204,9 @@ const Preloader = {
     if (navSeps.length) gsap.set(navSeps, { autoAlpha: 1 });
     if (navCards.length) gsap.set(navCards, { autoAlpha: 1 });
 
-    const webflowChildren = Utils.$$('.nav-webflow-bg, .nav-webflow-icon, .nav-webflow-text');
+    const builderChildren = Utils.$$('.nav-builder-bg, .nav-builder-icon, .nav-builder-text');
     const experienceChildren = Utils.$$('.nav-experience-bg, .nav-experience-numb, .nav-experience-text');
-    if (webflowChildren.length) gsap.set(webflowChildren, { autoAlpha: 0, filter: 'blur(8px)' });
+    if (builderChildren.length) gsap.set(builderChildren, { autoAlpha: 0, filter: 'blur(8px)' });
     if (experienceChildren.length) gsap.set(experienceChildren, { autoAlpha: 0, filter: 'blur(8px)' });
     if (navButton) gsap.set(navButton, { autoAlpha: 0, scale: 0.94, filter: 'blur(10px)' });
     if (navButtonSecondary) gsap.set(navButtonSecondary, { autoAlpha: 0, scale: 0.94, filter: 'blur(10px)' });
@@ -1247,14 +1247,14 @@ const Preloader = {
       this.timeline.to(navSeps, { height: '0.8vw', duration: sepDur, ease: 'power2.out' }, navStart);
     }
 
-    // 4. t=0.80 — cards group, 0.1s stagger: webflow trio → experience trio → hero-card-3
+    // 4. t=0.80 — cards group, 0.1s stagger: builder trio → experience trio → hero-card-3
     //    (all use the same autoAlpha + minimal blur, 0.9s duration)
     //    Links at 0.5, cards @ 0.60
     const cardsStart = 0.60;
     const cardOrder = [
-      Utils.$('.nav-webflow-bg'),
-      Utils.$('.nav-webflow-icon'),
-      Utils.$('.nav-webflow-text'),
+      Utils.$('.nav-builder-bg'),
+      Utils.$('.nav-builder-icon'),
+      Utils.$('.nav-builder-text'),
       Utils.$('.nav-experience-bg'),
       Utils.$('.nav-experience-numb'),
       Utils.$('.nav-experience-text'),
@@ -2904,7 +2904,7 @@ const CTAAnimation = {
       Utils.addEvent(this.wrapper, 'mousemove', this.handleMouseMove.bind(this));
       Utils.addEvent(this.wrapper, 'mouseleave', this.handleMouseLeave.bind(this));
 
-      console.log('✓ NESH Image Trail initialized');
+      console.log('✓ ARJUN Image Trail initialized');
     },
 
     getSVGCoords(e) {
