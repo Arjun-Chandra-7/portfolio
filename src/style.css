@@ -643,14 +643,13 @@ button:focus-visible, a:focus-visible {
 .character--2 { max-width: min(45vw, 680px); height: min(94vh, 920px); }
 .character--3 { max-width: min(44vw, 660px); height: min(94vh, 910px); }
 .character--4 {
-  left: 65%;
-  max-width: min(72vw, 1020px);
-  width: min(70vw, 980px);
-  height: min(98vh, 960px);
-  -webkit-mask-image: radial-gradient(ellipse 96% 92% at 50% 48%, #000 64%, rgba(0, 0, 0, 0.85) 84%, transparent 100%),
-                      linear-gradient(to bottom, #000 55%, rgba(0, 0, 0, 0.75) 80%, transparent 98%);
-  mask-image: radial-gradient(ellipse 96% 92% at 50% 48%, #000 64%, rgba(0, 0, 0, 0.85) 84%, transparent 100%),
-              linear-gradient(to bottom, #000 55%, rgba(0, 0, 0, 0.75) 80%, transparent 98%);
+  left: 72%;
+  max-width: min(52vw, 760px);
+  width: auto;
+  height: min(94vh, 920px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, rgba(0, 0, 0, 0.4) 94%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 80%, rgba(0, 0, 0, 0.4) 94%, transparent 100%);
+  filter: drop-shadow(0 0 45px rgba(181, 92, 255, 0.35)) drop-shadow(0 0 25px rgba(0, 0, 0, 0.8));
 }
 
 .character.is-active {
@@ -704,7 +703,7 @@ button:focus-visible, a:focus-visible {
   left: 76%;
 }
 [data-chapter="4"] .character, [data-chapter="4"] .character-ghost, [data-chapter="4"] .character-aura {
-  left: 68%;
+  left: 72%;
 }
 
 /* ==========================================================================
@@ -1474,27 +1473,34 @@ main {
 /* ==========================================================================
    ARCHETYPE 05: CONTACT / SUSANOO (MONUMENTAL COMMAND CENTER TERMINAL)
    ========================================================================== */
-.susanoo-command-layout {
+.contact-layout {
   display: flex;
   align-items: center;
   position: absolute;
   inset: 0;
-  padding: clamp(80px, 10.5vh, 110px) var(--pad) 75px;
+  padding: clamp(80px, 11vh, 115px) var(--pad) 75px;
 }
 
-.susanoo-command-card {
-  max-width: min(48vw, 560px);
+.contact-editorial {
+  max-width: min(44vw, 500px);
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  z-index: 4;
+  z-index: 10;
 }
 
-.susanoo-header {
+.contact-editorial .scene-heading {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.contact-kicker {
+  color: var(--accent);
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .contact-copy {
@@ -1511,10 +1517,6 @@ main {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
 }
 
-.contact-dispatch-hub {
-  position: relative;
-}
-
 .contact-email-card {
   display: flex;
   align-items: center;
@@ -1525,6 +1527,7 @@ main {
   background: var(--surface);
   backdrop-filter: blur(20px);
   box-shadow: 0 10px 36px rgba(0, 0, 0, 0.5);
+  text-decoration: none;
   cursor: pointer;
   transition: all 0.25s ease;
 }
@@ -1546,52 +1549,19 @@ main {
 }
 
 .contact-email-card strong {
-  font: 800 clamp(16px, 1.7vw, 24px)/1 var(--font-display);
-  letter-spacing: -0.04em;
+  font: 800 clamp(15px, 1.45vw, 21px)/1 var(--font-display);
+  letter-spacing: -0.03em;
   color: #fff;
-}
-
-.contact-email-card__actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.copy-badge {
-  padding: 4px 9px;
-  border-radius: 99px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.05);
-  font: 600 8.5px/1 var(--font-mono);
-  letter-spacing: 0.12em;
-  color: var(--ink);
 }
 
 .contact-email-card__arrow {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--accent);
+  transition: transform 0.2s ease;
 }
 
-.copy-toast {
-  position: absolute;
-  bottom: -32px;
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
-  padding: 5px 14px;
-  border-radius: 99px;
-  background: var(--accent);
-  color: #fff;
-  font: 700 9px/1 var(--font-mono);
-  letter-spacing: 0.12em;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 0 20px var(--accent);
-}
-
-.copy-toast.is-visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+.contact-email-card:hover .contact-email-card__arrow {
+  transform: translate(2px, -2px);
 }
 
 .contact-status-banner {
@@ -1832,7 +1802,7 @@ main {
   .hero-telemetry-panel {
     display: none;
   }
-  .hero-editorial, .dossier-panel, .mangekyo-showcase-layout, .rinnegan-bento-layout, .susanoo-command-card {
+  .hero-editorial, .dossier-panel, .mangekyo-showcase-layout, .rinnegan-bento-layout, .contact-editorial {
     max-width: 100%;
     gap: 14px;
   }
