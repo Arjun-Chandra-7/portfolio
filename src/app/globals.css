@@ -1,56 +1,12 @@
 @import "tailwindcss";
 
-/* Force visibility of all entrance and page elements */
 html, body {
-  opacity: 1 !important;
-  visibility: visible !important;
   background-color: #ECEBE1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.page-wrap,
-.main-wrap,
-.hero,
-.hero-sticky,
-.nav-container,
-.nav-menu-wrap,
-.nav-menu,
-.nav-menu-item,
-.hero-navigation-link,
-.hero-navigation-sep,
-.profile-img-wrap,
-.profile-img-item,
-.hero-card-3,
-.hero-cards-left,
-.hero-left-text,
-.hero-right-text,
-.hero-buttons-wrap,
-.hero-heading,
-.nav-stats-card,
-.nav-logo-item {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.hero-navigation-link {
-  color: #111111 !important;
-  display: inline-block !important;
-  pointer-events: auto !important;
-  font-weight: 700 !important;
-}
-
-.nav-link-mask-inner {
-  transform: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: block !important;
-}
-
-.nesh-logo-preload-wrap,
-.nesh-logo-preload-svg,
-.nesh-logo-ghost-wrap,
-.nesh-logo-ghost {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+/* Ensure smooth initial state for preloader */
+.nesh-logo-preload-wrap {
+  pointer-events: none;
 }
