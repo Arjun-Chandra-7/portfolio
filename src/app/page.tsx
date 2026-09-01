@@ -16,7 +16,6 @@ export default function Home() {
       <script src="https://cdn.prod.website-files.com/gsap/3.15.0/ScrollSmoother.min.js" type="text/javascript" />
       <script src="https://cdn.prod.website-files.com/gsap/3.15.0/MotionPathPlugin.min.js" type="text/javascript" />
       <script src="https://cdn.prod.website-files.com/gsap/3.15.0/DrawSVGPlugin.min.js" type="text/javascript" />
-      <script dangerouslySetInnerHTML={{ __html: `gsap.registerPlugin(ScrollTrigger,Flip,SplitText,ScrollToPlugin,ScrollSmoother,MotionPathPlugin,DrawSVGPlugin);` }} />
       <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" />
       <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" />
       <script src="/script.js" />

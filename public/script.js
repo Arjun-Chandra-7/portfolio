@@ -1096,12 +1096,20 @@ const Preloader = {
   timeline: null,
 
   init() {
-    // Disable preloader on mobile devices (screen width < 768px)
-    if (window.innerWidth < 768) return;
-    
     const logo = Utils.$('.nesh-logo-preload-svg');
     const wrapper = Utils.$('.nesh-logo-preload-wrap') || Utils.$('.nesh-logo-wrap');
     if (!logo || !wrapper) return;
+
+    // Safety fallback: ensure preload logo is always removed after intro completes
+    setTimeout(() => {
+      if (logo) logo.style.display = 'none';
+    }, 2800);
+
+    // Disable preloader animation on mobile devices (screen width < 768px)
+    if (window.innerWidth < 768) {
+      if (logo) logo.style.display = 'none';
+      return;
+    }
 
     const letters = Utils.$$('.nesh-logo-letter');
     const navContainer = Utils.$('.nav-container');
@@ -3284,10 +3292,8 @@ const ResizeHandler = {
     }
   };
   
-  window.addEventListener('load', () => {
+  function boot() {
     window.scrollTo(0, 0);
-    // Double-rAF ensures Safari completes layout/paint with freshly
-    // downloaded resources before we measure positions for Preloader
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         window.scrollTo(0, 0);
@@ -3295,7 +3301,16 @@ const ResizeHandler = {
         initAll();
       });
     });
-  });
+  }
+
+  if (document.readyState === 'complete') {
+    boot();
+  } else {
+    window.addEventListener('load', boot);
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(boot, 50);
+    });
+  }
 
   // Handle Safari bfcache — page restored from back/forward navigation
   window.addEventListener('pageshow', (e) => {
