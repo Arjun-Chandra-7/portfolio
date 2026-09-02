@@ -3,6 +3,19 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp=(n,min=0,max=1)=>Math.min(max,Math.max(min,n));
 window.scrollTo(0,0);
 
+// Kinetic browser title — pauses cleanly off-tab and restarts from a deliberate state.
+const titleFrames=['ARJUN.exe','ARJUN — BUILDS','AI / VISION / CODE','THINGS THAT SHOULD NOT','EXIST YET.','↗ ENTER THE LAB'];
+let titleFrame=0,titleTimer;
+function animateTitle(){
+  clearTimeout(titleTimer);
+  if(document.hidden){document.title='◉ ARJUN — COME BACK';return}
+  const phrase=titleFrames[titleFrame%titleFrames.length],glyphs='▰◆✦⌁';
+  let step=0;
+  const type=()=>{document.title=`${glyphs[titleFrame%glyphs.length]} ${phrase.slice(0,step)}${step<phrase.length?'_':''}`;if(step++<phrase.length)titleTimer=setTimeout(type,62);else{titleFrame++;titleTimer=setTimeout(animateTitle,900)}};
+  type();
+}
+document.addEventListener('visibilitychange',animateTitle);animateTitle();
+
 // Intro sequence
 const count=document.querySelector('.loader-bottom b');
 let introStart=performance.now();
@@ -121,9 +134,18 @@ document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('c
 // Magnetic controls
 document.querySelectorAll('.button,.rail-cta,.contact-actions a,.project-main>a').forEach(el=>{el.classList.add('magnetic');el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;gsap?.to(el,{x:x*.18,y:y*.22,duration:.25,ease:'power2.out'})});el.addEventListener('pointerleave',()=>gsap?.to(el,{x:0,y:0,duration:.65,ease:'elastic.out(1,.35)'}))});
 
-// Inertial cursor and project state.
+// Layered inertial cursor: fast core, slower ring, contextual intent and velocity stretch.
 const cursor=document.querySelector('.cursor');
-if(!reduced&&matchMedia('(pointer:fine)').matches&&window.gsap){const xTo=gsap.quickTo(cursor,'x',{duration:.35,ease:'power3'}),yTo=gsap.quickTo(cursor,'y',{duration:.35,ease:'power3'});addEventListener('pointermove',e=>{xTo(e.clientX);yTo(e.clientY)});document.querySelectorAll('.project').forEach(card=>{card.addEventListener('pointerenter',()=>cursor.classList.add('is-project'));card.addEventListener('pointerleave',()=>cursor.classList.remove('is-project'))})}
+if(!reduced&&matchMedia('(pointer:fine)').matches&&window.gsap){
+  const ring=cursor.querySelector('.cursor-ring'),core=cursor.querySelector('.cursor-core'),label=cursor.querySelector('.cursor-label');
+  const ringX=gsap.quickTo(cursor,'x',{duration:.32,ease:'power3'}),ringY=gsap.quickTo(cursor,'y',{duration:.32,ease:'power3'});
+  const coreX=gsap.quickTo(core,'x',{duration:.09,ease:'power2.out'}),coreY=gsap.quickTo(core,'y',{duration:.09,ease:'power2.out'});
+  let previousX=0,previousY=0;
+  addEventListener('pointermove',e=>{ringX(e.clientX);ringY(e.clientY);coreX(e.clientX-cursor._gsap.x);coreY(e.clientY-cursor._gsap.y);const dx=e.clientX-previousX,dy=e.clientY-previousY,speed=Math.min(1,Math.hypot(dx,dy)/55);gsap.to(ring,{scaleX:1+speed*.55,scaleY:1-speed*.2,rotation:Math.atan2(dy,dx)*180/Math.PI,duration:.22,ease:'power2.out',overwrite:true});previousX=e.clientX;previousY=e.clientY},{passive:true});
+  const targets=document.querySelectorAll('a,button,.project,.cap-chip,.faq-mark');
+  targets.forEach(el=>{el.addEventListener('pointerenter',()=>{const project=el.closest('.project'),action=project?'VIEW':el.matches('a')?'OPEN':el.matches('.faq-mark')?'REVEAL':'GO';label.textContent=action;cursor.classList.add('is-active');cursor.classList.toggle('is-project',!!project)});el.addEventListener('pointerleave',()=>{cursor.classList.remove('is-active','is-project');label.textContent='EXPLORE'})});
+  addEventListener('pointerdown',()=>cursor.classList.add('is-down'));addEventListener('pointerup',()=>cursor.classList.remove('is-down'));addEventListener('mouseleave',()=>cursor.classList.add('is-hidden'));addEventListener('mouseenter',()=>cursor.classList.remove('is-hidden'));
+}
 
 // Accordions and clipboard
 document.querySelectorAll('.accordions button').forEach(button=>button.addEventListener('click',()=>{const article=button.closest('article'),open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));article.classList.toggle('open',!open);setTimeout(()=>ScrollTrigger?.refresh(),420)}));
