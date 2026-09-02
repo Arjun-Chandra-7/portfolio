@@ -38,13 +38,32 @@ function initMotion(){
   root.classList.add('loaded','motion-ready','gsap-ready');
   if(reduced||!window.gsap)return;
   gsap.registerPlugin(ScrollTrigger);
-  gsap.defaults({force3D:true});
   const updateRailState=()=>body.classList.toggle('rail-visible',scrollY>document.querySelector('.hero-shell').offsetHeight*.38);
   if(lenis)lenis.on('scroll',()=>{ScrollTrigger.update();updateRailState()});
   addEventListener('scroll',updateRailState,{passive:true});updateRailState();
   if(lenis)gsap.ticker.add(time=>lenis.raf(time*1000));gsap.ticker.lagSmoothing(0);
 
   document.querySelectorAll('.section-title h2,.statement,.big-copy,.philosophy h2,.contact h2,.faq-grid h2').forEach(splitWords);
+
+  // High-energy scroll layer: depth, opposing drift and velocity-reactive atmosphere.
+  const aura=document.querySelector('.scroll-aura');
+  if(aura){
+    gsap.to(aura,{yPercent:145,rotation:165,ease:'none',scrollTrigger:{trigger:body,start:'top top',end:'bottom bottom',scrub:1.4}});
+    const auraScale=gsap.quickTo(aura,'scaleY',{duration:.42,ease:'power3.out'}),auraRotate=gsap.quickTo(aura,'rotationX',{duration:.5,ease:'power3.out'});
+    let settle;
+    const reactToVelocity=velocity=>{const force=clamp(Math.abs(velocity)/22,0,1);auraScale(1+force*.8);auraRotate(clamp(velocity*-1.8,-28,28));body.style.setProperty('--scroll-force',force.toFixed(3));clearTimeout(settle);settle=setTimeout(()=>{auraScale(1);auraRotate(0);body.style.setProperty('--scroll-force','0')},110)};
+    if(lenis)lenis.on('scroll',event=>reactToVelocity(event.velocity));else{let lastScroll=scrollY;addEventListener('scroll',()=>{const velocity=scrollY-lastScroll;lastScroll=scrollY;reactToVelocity(velocity)},{passive:true})}
+  }
+  gsap.utils.toArray('.section-title').forEach((title,i)=>{
+    const heading=title.querySelector('h2'),copy=title.querySelector(':scope>p');
+    if(heading)gsap.fromTo(heading,{xPercent:i%2?-10:10,rotationZ:i%2?-1.2:1.2},{xPercent:i%2?5:-5,rotationZ:0,ease:'none',scrollTrigger:{trigger:title,start:'top bottom',end:'bottom top',scrub:1.1}});
+    if(copy)gsap.fromTo(copy,{xPercent:i%2?18:-18,y:45},{xPercent:i%2?-7:7,y:-25,ease:'none',scrollTrigger:{trigger:title,start:'top bottom',end:'bottom top',scrub:1.5}});
+  });
+  gsap.fromTo('.statement',{rotationX:18,transformPerspective:900,scale:.84},{rotationX:-5,scale:1.04,ease:'none',scrollTrigger:{trigger:'.statement',start:'top 95%',end:'bottom 10%',scrub:1.2}});
+  gsap.utils.toArray('.about-grid>p').forEach((item,i)=>gsap.fromTo(item,{y:100+i*35,rotationY:i%2?12:-12},{y:-45-i*20,rotationY:0,ease:'none',scrollTrigger:{trigger:'.about-grid',start:'top bottom',end:'bottom top',scrub:1.3}}));
+  gsap.utils.toArray('.awards article,.stack-cols>div,.accordions article').forEach((item,i)=>gsap.fromTo(item,{x:i%2?75:-75,rotationY:i%2?-8:8,transformPerspective:900},{x:0,rotationY:0,ease:'power2.out',scrollTrigger:{trigger:item,start:'top 96%',end:'top 68%',scrub:.75}}));
+  gsap.fromTo('.contact h2',{scale:.68,rotationX:22,transformPerspective:800},{scale:1.08,rotationX:-4,ease:'none',scrollTrigger:{trigger:'.contact',start:'top bottom',end:'bottom top',scrub:1}});
+  gsap.fromTo('footer>h2',{xPercent:-22,scaleX:.72},{xPercent:4,scaleX:1.02,ease:'none',scrollTrigger:{trigger:'footer',start:'top bottom',end:'bottom bottom',scrub:1.15}});
 
   // Hero: one continuous, scrubbed morph into the rail.
   const heroTL=gsap.timeline({scrollTrigger:{trigger:'.hero-shell',start:'top top',end:'bottom bottom',scrub:1.35}});
