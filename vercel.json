@@ -1,0 +1,11 @@
+{
+  "framework": null,
+  "buildCommand": null,
+  "installCommand": null,
+  "outputDirectory": ".",
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 20
+    }
+  }
+}
