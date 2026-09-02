@@ -106,9 +106,12 @@ function runIntro(){
     .to('.loader-line i',{scaleX:1,duration:.65,ease:'power2.inOut'},.08)
     .to('.loader-top,.loader-bottom',{opacity:0,y:(i)=>i?-18:18,duration:.35,ease:'power2.in'},.72)
     .add(()=>{const from=mark.getBoundingClientRect(),to=heroMark.getBoundingClientRect();gsap.set(mark,{position:'fixed',left:from.left,top:from.top,width:from.width,height:from.height,margin:0,transformOrigin:'0 0'});mark.dataset.dx=String(to.left-from.left);mark.dataset.dy=String(to.top-from.top);mark.dataset.sx=String(to.width/from.width);mark.dataset.sy=String(to.height/from.height)},.9)
-    .to(mark,{x:()=>Number(mark.dataset.dx),y:()=>Number(mark.dataset.dy),scaleX:()=>Number(mark.dataset.sx),scaleY:()=>Number(mark.dataset.sy),duration:1.05,ease:'expo.inOut'},.92)
-    .to(loader,{backgroundColor:'rgba(9,9,11,0)',duration:.55,ease:'power2.inOut'},1.25)
-    .to(loader,{opacity:0,duration:.22,ease:'power2.out'},1.78);
+    .to(mark,{x:()=>Number(mark.dataset.dx),y:()=>Number(mark.dataset.dy),scaleX:()=>Number(mark.dataset.sx),scaleY:()=>Number(mark.dataset.sy),duration:1.12,ease:'expo.inOut'},.92)
+    // Complete the geometry first, then crossfade identical white wordmarks.
+    // Keeping the loader opaque until this point prevents the last letters clipping.
+    .set(heroMark,{opacity:1},2.04)
+    .to(mark,{opacity:0,duration:.24,ease:'power2.out'},2.04)
+    .to(loader,{opacity:0,duration:.34,ease:'power2.inOut'},2.04);
 }
 window.addEventListener('load',()=>{if(skipIntro)finishIntro();else runIntro()});
 
