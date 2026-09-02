@@ -13,7 +13,6 @@
 /.next/
 /out/
 /build
-/dist
 
 # local secrets and platform state
 .env*
