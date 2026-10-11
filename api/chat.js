@@ -35,6 +35,8 @@ module.exports = async function handler(request, response) {
     role: message.role === 'assistant' || message.role === 'model' ? 'model' : 'user',
     parts: [{ text: String(message.content || '').slice(0, 1800) }]
   })).filter(message => message.parts[0].text.trim());
+  // Gemini expects the conversation to open with a user turn.
+  while (messages.length && messages[0].role === 'model') messages.shift();
   if (!messages.length) return response.status(400).json({ error: 'A message is required' });
 
   try {

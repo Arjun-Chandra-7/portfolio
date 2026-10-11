@@ -1,6 +1,7 @@
 const root=document.documentElement,body=document.body;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp=(n,min=0,max=1)=>Math.min(max,Math.max(min,n));
+if('scrollRestoration' in history)history.scrollRestoration='manual';
 window.scrollTo(0,0);
 
 // Kinetic browser title — pauses cleanly off-tab and restarts from a deliberate state.
@@ -38,9 +39,14 @@ function initMotion(){
   root.classList.add('loaded','motion-ready','gsap-ready');
   if(reduced||!window.gsap)return;
   gsap.registerPlugin(ScrollTrigger);
-  const updateRailState=()=>body.classList.toggle('rail-visible',scrollY>document.querySelector('.hero-shell').offsetHeight*.38);
+  // Cache the hero height so scrolling never forces a layout read.
+  const heroShell=document.querySelector('.hero-shell');
+  let railThreshold=heroShell.offsetHeight*.38,railVisible=null;
+  const updateRailState=()=>{const visible=scrollY>railThreshold;if(visible!==railVisible){railVisible=visible;body.classList.toggle('rail-visible',visible)}};
+  ScrollTrigger.addEventListener('refreshInit',()=>{railThreshold=heroShell.offsetHeight*.38});
   if(lenis)lenis.on('scroll',()=>{ScrollTrigger.update();updateRailState()});
-  addEventListener('scroll',updateRailState,{passive:true});updateRailState();
+  else addEventListener('scroll',updateRailState,{passive:true});
+  updateRailState();
   if(lenis)gsap.ticker.add(time=>lenis.raf(time*1000));gsap.ticker.lagSmoothing(0);
 
   document.querySelectorAll('.section-title h2,.statement,.big-copy,.philosophy h2,.contact h2,.faq-grid h2').forEach(splitWords);
@@ -50,8 +56,12 @@ function initMotion(){
   if(aura){
     gsap.to(aura,{yPercent:145,rotation:165,ease:'none',scrollTrigger:{trigger:body,start:'top top',end:'bottom bottom',scrub:1.4}});
     const auraScale=gsap.quickTo(aura,'scaleY',{duration:.42,ease:'power3.out'}),auraRotate=gsap.quickTo(aura,'rotationX',{duration:.5,ease:'power3.out'});
-    let settle;
-    const reactToVelocity=velocity=>{const force=clamp(Math.abs(velocity)/22,0,1);auraScale(1+force*.8);auraRotate(clamp(velocity*-1.8,-28,28));body.style.setProperty('--scroll-force',force.toFixed(3));clearTimeout(settle);settle=setTimeout(()=>{auraScale(1);auraRotate(0);body.style.setProperty('--scroll-force','0')},110)};
+    // --scroll-force is written only on the elements that read it; writing it on <body>
+    // invalidated styles for the entire document on every scroll frame.
+    const forceTargets=[aura,...document.querySelectorAll('.section-title')];
+    let settle,lastForce='0';
+    const setForce=value=>{if(value===lastForce)return;lastForce=value;forceTargets.forEach(el=>el.style.setProperty('--scroll-force',value))};
+    const reactToVelocity=velocity=>{const force=clamp(Math.abs(velocity)/22,0,1);auraScale(1+force*.8);auraRotate(clamp(velocity*-1.8,-28,28));setForce(force.toFixed(2));clearTimeout(settle);settle=setTimeout(()=>{auraScale(1);auraRotate(0);setForce('0')},110)};
     if(lenis)lenis.on('scroll',event=>reactToVelocity(event.velocity));else{let lastScroll=scrollY;addEventListener('scroll',()=>{const velocity=scrollY-lastScroll;lastScroll=scrollY;reactToVelocity(velocity)},{passive:true})}
   }
   gsap.utils.toArray('.section-title').forEach((title,i)=>{
@@ -66,10 +76,10 @@ function initMotion(){
   gsap.fromTo('footer>h2',{xPercent:-22,scaleX:.72},{xPercent:4,scaleX:1.02,ease:'none',scrollTrigger:{trigger:'footer',start:'top bottom',end:'bottom bottom',scrub:1.15}});
 
   // Hero: one continuous, scrubbed morph into the rail.
-  const heroTL=gsap.timeline({scrollTrigger:{trigger:'.hero-shell',start:'top top',end:'bottom bottom',scrub:1.35}});
-  heroTL.to('.wordmark',{y:-innerHeight*.08,x:-innerWidth*.05,scaleX:.38,scaleY:.38,opacity:.25,ease:'none'},0)
-    .to('.portrait',{y:-90,scale:.82,filter:'blur(45px)',opacity:.2,ease:'none'},0)
-    .to('.hero-copy',{y:-innerHeight*.32,scale:.82,opacity:0,ease:'none'},0)
+  const heroTL=gsap.timeline({scrollTrigger:{trigger:'.hero-shell',start:'top top',end:'bottom bottom',scrub:1.35,invalidateOnRefresh:true}});
+  heroTL.to('.wordmark',{y:()=>-innerHeight*.08,x:()=>-innerWidth*.05,scaleX:.38,scaleY:.38,opacity:.25,ease:'none'},0)
+    .to('.portrait',{y:-90,scale:.82,filter:'blur(16px)',opacity:.2,ease:'none'},0)
+    .to('.hero-copy',{y:()=>-innerHeight*.32,scale:.82,opacity:0,ease:'none'},0)
     .to('.glass',{y:-70,scale:.8,opacity:0,stagger:.05,ease:'none'},.03)
     .to('.nav',{y:-40,opacity:0,ease:'none'},0);
 
@@ -95,14 +105,21 @@ function initMotion(){
   const getTravel=()=>Math.max(0,track.scrollWidth-innerWidth*.73);
   const projectCards=gsap.utils.toArray('.project');
   const cardLevels=[-82,54,-38,86,-18];
-  gsap.to(track,{x:()=>-getTravel(),ease:'none',scrollTrigger:{trigger:'.work',start:'top top',end:'bottom bottom',scrub:1.1,invalidateOnRefresh:true,onUpdate:self=>{
+  // Card centres are measured once per refresh (relative to the track) instead of calling
+  // getBoundingClientRect between style writes every frame, which forced a layout per card.
+  let cardCentres=[];
+  const measureCards=()=>{const x=gsap.getProperty(track,'x');cardCentres=projectCards.map(card=>{const r=card.getBoundingClientRect();return r.left+r.width/2-x})};
+  const cardSetters=projectCards.map(card=>({y:gsap.quickSetter(card,'y','px'),scale:gsap.quickSetter(card,'scale'),opacity:gsap.quickSetter(card,'opacity'),rotationY:gsap.quickSetter(card,'rotationY','deg'),rotationZ:gsap.quickSetter(card,'rotationZ','deg')}));
+  const updateCards=progress=>{
+    const trackX=gsap.getProperty(track,'x'),half=innerWidth/2;
     projectCards.forEach((card,i)=>{
-      const r=card.getBoundingClientRect(),distance=Math.abs(r.left+r.width/2-innerWidth/2),focus=clamp(1-distance/(innerWidth*.65));
-      const wave=Math.sin(self.progress*Math.PI*4+i*1.2)*24;
-      gsap.set(card,{y:cardLevels[i%cardLevels.length]+wave,scale:.86+focus*.14,opacity:.42+focus*.58,rotationY:(r.left+r.width/2-innerWidth/2)/innerWidth*8,rotationZ:(i%2?1:-1)*(2.4-focus*2.1)});
-      gsap.set(card.querySelector('h3'),{letterSpacing:`${-.055+focus*.025}em`});
+      const offset=cardCentres[i]+trackX-half,focus=clamp(1-Math.abs(offset)/(innerWidth*.65));
+      const wave=Math.sin(progress*Math.PI*4+i*1.2)*24,set=cardSetters[i];
+      set.y(cardLevels[i%cardLevels.length]+wave);set.scale(.86+focus*.14);set.opacity(.42+focus*.58);set.rotationY(offset/innerWidth*8);set.rotationZ((i%2?1:-1)*(2.4-focus*2.1));
     });
-  }}});
+  };
+  const reel=gsap.to(track,{x:()=>-getTravel(),ease:'none',scrollTrigger:{trigger:'.work',start:'top top',end:'bottom bottom',scrub:1.1,invalidateOnRefresh:true,onRefresh:self=>{measureCards();updateCards(self.progress)}}});
+  reel.eventCallback('onUpdate',()=>updateCards(reel.progress()));
   gsap.utils.toArray('.project').forEach((card,i)=>{
     gsap.to(card.querySelector('.project-art'),{xPercent:i%2?8:-8,scale:1.12,ease:'none',scrollTrigger:{trigger:'.work',start:'top top',end:'bottom bottom',scrub:1}});
   });
@@ -151,7 +168,7 @@ window.addEventListener('load',()=>{if(skipIntro)finishIntro();else runIntro()})
 document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const target=document.querySelector(link.hash);if(!target)return;event.preventDefault();lenis?lenis.scrollTo(target,{duration:1.45}):target.scrollIntoView({behavior:'smooth'})}));
 
 // Magnetic controls
-document.querySelectorAll('.button,.rail-cta,.contact-actions a,.project-main>a').forEach(el=>{el.classList.add('magnetic');el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;gsap?.to(el,{x:x*.18,y:y*.22,duration:.25,ease:'power2.out'})});el.addEventListener('pointerleave',()=>gsap?.to(el,{x:0,y:0,duration:.65,ease:'elastic.out(1,.35)'}))});
+if(window.gsap&&!reduced)document.querySelectorAll('.button,.rail-cta,.contact-actions a,.project-main>a').forEach(el=>{el.classList.add('magnetic');el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=e.clientX-r.left-r.width/2-gsap.getProperty(el,'x'),y=e.clientY-r.top-r.height/2-gsap.getProperty(el,'y');gsap.to(el,{x:x*.18,y:y*.22,duration:.25,ease:'power2.out',overwrite:'auto'})});el.addEventListener('pointerleave',()=>gsap.to(el,{x:0,y:0,duration:.65,ease:'elastic.out(1,.35)',overwrite:'auto'}))});
 
 // Layered inertial cursor: fast core, slower ring, contextual intent and velocity stretch.
 const cursor=document.querySelector('.cursor');
@@ -159,15 +176,16 @@ if(!reduced&&matchMedia('(pointer:fine)').matches&&window.gsap){
   const ring=cursor.querySelector('.cursor-ring'),core=cursor.querySelector('.cursor-core'),label=cursor.querySelector('.cursor-label');
   const ringX=gsap.quickTo(cursor,'x',{duration:.32,ease:'power3'}),ringY=gsap.quickTo(cursor,'y',{duration:.32,ease:'power3'});
   const coreX=gsap.quickTo(core,'x',{duration:.09,ease:'power2.out'}),coreY=gsap.quickTo(core,'y',{duration:.09,ease:'power2.out'});
+  const stretchX=gsap.quickTo(ring,'scaleX',{duration:.22,ease:'power2.out'}),stretchY=gsap.quickTo(ring,'scaleY',{duration:.22,ease:'power2.out'}),setAngle=gsap.quickSetter(ring,'rotation','deg');
   let previousX=0,previousY=0;
-  addEventListener('pointermove',e=>{ringX(e.clientX);ringY(e.clientY);coreX(e.clientX-cursor._gsap.x);coreY(e.clientY-cursor._gsap.y);const dx=e.clientX-previousX,dy=e.clientY-previousY,speed=Math.min(1,Math.hypot(dx,dy)/55);gsap.to(ring,{scaleX:1+speed*.55,scaleY:1-speed*.2,rotation:Math.atan2(dy,dx)*180/Math.PI,duration:.22,ease:'power2.out',overwrite:true});previousX=e.clientX;previousY=e.clientY},{passive:true});
+  addEventListener('pointermove',e=>{ringX(e.clientX);ringY(e.clientY);coreX(e.clientX-gsap.getProperty(cursor,'x'));coreY(e.clientY-gsap.getProperty(cursor,'y'));const dx=e.clientX-previousX,dy=e.clientY-previousY,speed=Math.min(1,Math.hypot(dx,dy)/55);stretchX(1+speed*.55);stretchY(1-speed*.2);if(speed>.02)setAngle(Math.atan2(dy,dx)*180/Math.PI);previousX=e.clientX;previousY=e.clientY},{passive:true});
   const targets=document.querySelectorAll('a,button,.project,.cap-chip,.faq-mark');
   targets.forEach(el=>{el.addEventListener('pointerenter',()=>{const project=el.closest('.project'),action=project?'VIEW':el.matches('a')?'OPEN':el.matches('.faq-mark')?'REVEAL':'GO';label.textContent=action;cursor.classList.add('is-active');cursor.classList.toggle('is-project',!!project)});el.addEventListener('pointerleave',()=>{cursor.classList.remove('is-active','is-project');label.textContent='EXPLORE'})});
   addEventListener('pointerdown',()=>cursor.classList.add('is-down'));addEventListener('pointerup',()=>cursor.classList.remove('is-down'));addEventListener('mouseleave',()=>cursor.classList.add('is-hidden'));addEventListener('mouseenter',()=>cursor.classList.remove('is-hidden'));
 }
 
 // Accordions and clipboard
-document.querySelectorAll('.accordions button').forEach(button=>button.addEventListener('click',()=>{const article=button.closest('article'),open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));article.classList.toggle('open',!open);setTimeout(()=>ScrollTrigger?.refresh(),420)}));
+document.querySelectorAll('.accordions button').forEach(button=>button.addEventListener('click',()=>{const article=button.closest('article'),open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));article.classList.toggle('open',!open);setTimeout(()=>window.ScrollTrigger?.refresh(),420)}));
 const copyButton=document.querySelector('.rail-email');copyButton?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(copyButton.dataset.copy);copyButton.firstChild.textContent='Copied to clipboard '}catch{location.href=`mailto:${copyButton.dataset.copy}`}});
 
 // Local portfolio knowledge guide. No external API or visitor data transmission.
@@ -199,7 +217,7 @@ async function submitChat(value){
   const question=value.trim();if(!question)return;addMessage(question,'user');chatInput.value='';geminiHistory.push({role:'user',content:question});
   const typing=document.createElement('article');typing.className='bot enter typing';typing.innerHTML='<span>AC</span><p><i></i><i></i><i></i></p>';chatLog.insertBefore(typing,chatLog.querySelector('.chat-prompts'));chatLog.scrollTo({top:chatLog.scrollHeight,behavior:'smooth'});
   let answer;
-  try{const result=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:geminiHistory.slice(-10)})});if(!result.ok)throw new Error('Gemini unavailable');const data=await result.json();answer=data.text}catch{answer=chatAnswer(question)}
+  try{const result=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:geminiHistory.slice(-10)})});if(!result.ok)throw new Error('Gemini unavailable');const data=await result.json();if(!data?.text)throw new Error('Empty reply');answer=data.text}catch{answer=chatAnswer(question)}
   typing.remove();geminiHistory.push({role:'assistant',content:answer});addMessage(answer,'bot');
 }
 document.querySelector('.chat-launch')?.addEventListener('click',()=>{chat.dataset.open='true';lenis?.stop();setTimeout(()=>chatInput.focus(),300)});document.querySelector('.chat-close')?.addEventListener('click',()=>{chat.dataset.open='false';lenis?.start()});chatForm?.addEventListener('submit',event=>{event.preventDefault();submitChat(chatInput.value)});document.querySelectorAll('.chat-prompts button').forEach(button=>button.addEventListener('click',()=>submitChat(button.textContent)));
